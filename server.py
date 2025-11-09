@@ -16,7 +16,7 @@ from datetime import datetime
 from ai import issue_tag, compute_priority
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 @app.route('/analyze', methods=['POST'])
 def analyze_issue():
