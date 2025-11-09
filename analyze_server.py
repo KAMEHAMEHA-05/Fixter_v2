@@ -1,6 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import random
+from twilio.rest import Client
+# configure from env vars
+TWILIO_SID = "AC75717d7a940c9730f04ecefb655db77b"
+TWILIO_AUTH = "d6a92d2db778da4eb778091db94a8b99"
+TWILIO_FROM = "+12173953031"
+client = Client(TWILIO_SID, TWILIO_AUTH)
 
 app = Flask(__name__)
 CORS(app)  # allow cross-origin from your frontend origin
@@ -35,6 +41,16 @@ def analyze():
     score = round(score, 2)
 
     return jsonify({ 'priority_score': score, 'tags': list(tags) })
+
+@app.route('/notify', methods=['POST'])
+def notify():
+    data = request.get_json()
+    to = data.get('to')
+    body = data.get('body')
+    if not to or not body:
+        return jsonify({"error":"bad request"}), 400
+    msg = client.messages.create(body=body, from_=TWILIO_FROM, to=to)
+    return jsonify({"sid": msg.sid})
 
 if __name__ == "__main__":
     # run on 0.0.0.0 so EC2 can receive requests
