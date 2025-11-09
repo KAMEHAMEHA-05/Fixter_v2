@@ -4,7 +4,7 @@ import random
 from twilio.rest import Client
 # configure from env vars
 TWILIO_SID = "AC75717d7a940c9730f04ecefb655db77b"
-TWILIO_AUTH = "d6a92d2db778da4eb778091db94a8b99"
+TWILIO_AUTH = "5a2ea27a1361a27054e003f46a52f33c"
 TWILIO_FROM = "+12173953031"
 client = Client(TWILIO_SID, TWILIO_AUTH)
 
@@ -49,7 +49,7 @@ def notify():
     body = data.get('body')
     if not to or not body:
         return jsonify({"error":"bad request"}), 400
-    msg = client.messages.create(body=body, from_=TWILIO_FROM, to=to)
+    msg = client.messages.create(from_=TWILIO_FROM, body = body, to=to)
     return jsonify({"sid": msg.sid})
 
 if __name__ == "__main__":
